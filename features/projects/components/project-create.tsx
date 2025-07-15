@@ -1,50 +1,71 @@
 "use client";
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { PlusIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
 import { useActionState, useState } from "react";
+import { PlusIcon } from "lucide-react";
 import { ProjectCreate } from "../actions";
-import { Calendar } from "@/components/ui/calendar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Teams } from "@/lib/generated/prisma";
 
 export function ProjectCreatePage({ teams }: { teams: Teams[] }) {
-
-    const [state, formAction] = useActionState(ProjectCreate, null)
-    const [date, setDate] = useState<Date | undefined>(new Date())
+    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [state, formAction] = useActionState(ProjectCreate, null);
 
     return (
         <Dialog>
-            <DialogTrigger><PlusIcon /></DialogTrigger>
-            <DialogContent>
+            <DialogTrigger className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                <PlusIcon className="w-4 h-4" />
+                Proje Ekle
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Yeni Takım Ekle</DialogTitle>
+                    <DialogTitle>Yeni Proje Oluştur</DialogTitle>
                 </DialogHeader>
+
                 <form action={formAction} className="flex flex-col gap-4">
-                    <input name="name" placeholder="Proje adı" />
-                    <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        className="rounded-lg border"
+                    <input
+                        name="name"
+                        placeholder="Proje adı"
+                        className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
-                    <input type="hidden" name="time" value={date?.toString()}></input>
-                    <div className="flex flex-col gp-2">
-                        <label>Takımlar</label>
-                        {
-                            teams.map((team) => (
-                                <div className="flex flex-col" key={team.id}>
-                                    <label>Takım</label>
-                                    <input name="teams" type="checkbox" value={team.id}></input>
-                                    <span>{team.name} {team.surname}</span>
-                                </div>
-                            ))
-                        }
+
+                    <div>
+                        <label className="text-sm font-medium mb-1 block">Proje Tarihi</label>
+                        <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            className="rounded-md border"
+                        />
+                        <input type="hidden" name="time" value={date?.toISOString()} />
                     </div>
-                    <input name="status" placeholder="Proje durumu" />
-                    <button type="submit">Kaydet</button>
+
+                    <div>
+                        <label className="text-sm font-medium mb-1 block">Takım Seçimi</label>
+                        <div className="grid grid-cols-2 gap-2">
+                            {teams.map((team) => (
+                                <label key={team.id} className="flex items-center gap-2">
+                                    <input type="checkbox" name="teams" value={team.id} />
+                                    <span className="text-sm">{team.name} {team.surname}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <input
+                        name="status"
+                        placeholder="Proje durumu"
+                        className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+
+                    <button
+                        type="submit"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+                    >
+                        Kaydet
+                    </button>
                 </form>
             </DialogContent>
         </Dialog>
-    )
+    );
 }
