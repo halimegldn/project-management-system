@@ -11,19 +11,18 @@ datasource db {
 model Projects {
   id        String   @id @default(cuid())
   name      String
-  // teams     Teams[]
+  teams     Teams[]  @relation("ProjectTeams")
   time      DateTime
   status    String
   createdAt DateTime @default(now())
 }
 
 model Teams {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   name      String
   surname   String
-  createdAt DateTime @default(now())
-  // projectId String?
-  // project   Projects? @relation(fields: [projectId], references: [id])
+  projects  Projects[] @relation("ProjectTeams")
+  createdAt DateTime   @default(now())
 }
 
 model User {

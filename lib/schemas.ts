@@ -7,7 +7,7 @@ export const TeamsSchema = z.object({
 
 export const ProjectsSchema = z.object({
     name: z.string().min(1, "Proje adı girin"),
-    teams: z.array(TeamsSchema).min(1, "En az bir takım giriniz"),
+    teams: z.array(z.string()).min(1, "En az bir takım seçiniz"),
     time: z.date(),
     status: z.string().min(1, "Proje durumu girin")
-})
+});
