@@ -14,6 +14,7 @@ model Projects {
   teams     Teams[]  @relation("ProjectTeams")
   time      DateTime
   status    String
+  tasks     Tasks[]
   createdAt DateTime @default(now())
 }
 
@@ -23,6 +24,14 @@ model Teams {
   surname   String
   projects  Projects[] @relation("ProjectTeams")
   createdAt DateTime   @default(now())
+}
+
+model Tasks {
+  id         String   @id @default(cuid())
+  name       String
+  projectsId String
+  projects   Projects @relation(fields: [projectsId], references: [id])
+  createdAt  DateTime @default(now())
 }
 
 model User {
