@@ -5,10 +5,15 @@ import { PlusIcon } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { TaskCreateAction } from "../actions";
 import { Projects } from "@/lib/generated/prisma";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export function TasksCreate({ projects }: { projects: Projects[] }) {
-
     const [state, formAction] = useActionState(TaskCreateAction, null);
     const [selectedProjectId, setSelectedProjectId] = useState("");
     const [taskName, setTaskName] = useState("");
@@ -23,7 +28,7 @@ export function TasksCreate({ projects }: { projects: Projects[] }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button className="w-1/12 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-36">
                     <PlusIcon className="w-4 h-4" />
                     Task Ekle
                 </button>
@@ -35,8 +40,9 @@ export function TasksCreate({ projects }: { projects: Projects[] }) {
                 </DialogHeader>
 
                 <form action={formAction} className="flex flex-col gap-4 mt-4">
-                    <Select onValueChange={setSelectedProjectId}>
-                        <SelectTrigger className="w-[180px]">
+                    <label className="font-medium text-sm">Proje Seçimi</label>
+                    <Select value={selectedProjectId} onValueChange={setSelectedProjectId}>
+                        <SelectTrigger className="w-full">
                             <SelectValue placeholder="Proje Adı" />
                         </SelectTrigger>
                         <SelectContent>
@@ -47,11 +53,14 @@ export function TasksCreate({ projects }: { projects: Projects[] }) {
                             ))}
                         </SelectContent>
                     </Select>
-                    <input type="hidden" name="projectsId" value={selectedProjectId}></input>
+
+                    <input type="hidden" name="projectsId" value={selectedProjectId} />
+
+                    <label className="font-medium text-sm">Task Adı</label>
                     <input
+                        name="name"
                         value={taskName}
                         onChange={(e) => setTaskName(e.target.value)}
-                        name="name"
                         placeholder="Task adı"
                         className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                     />
@@ -62,8 +71,16 @@ export function TasksCreate({ projects }: { projects: Projects[] }) {
                     >
                         Kaydet
                     </button>
+
+                    {/* {state?.success === false && (
+                        <p className="text-red-600 text-sm mt-2">{state.message || "Hata oluştu"}</p>
+                    )}
+
+                    {state?.success === true && (
+                        <p className="text-green-600 text-sm mt-2">{state.message}</p>
+                    )} */}
                 </form>
             </DialogContent>
         </Dialog>
-    )
+    );
 }
