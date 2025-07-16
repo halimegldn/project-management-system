@@ -8,8 +8,11 @@ import { ProjectCreate } from "../actions";
 import { Teams } from "@/lib/generated/prisma";
 
 export function ProjectCreatePage({ teams }: { teams: Teams[] }) {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+
     const [state, formAction] = useActionState(ProjectCreate, null);
+    const [projectName, setProjectName] = useState("");
+    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [projectStatu, setProjectStatu] = useState("");
 
     return (
         <Dialog>
@@ -27,6 +30,8 @@ export function ProjectCreatePage({ teams }: { teams: Teams[] }) {
                         name="name"
                         placeholder="Proje adı"
                         className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
                     />
 
                     <div>
@@ -39,7 +44,6 @@ export function ProjectCreatePage({ teams }: { teams: Teams[] }) {
                         />
                         <input type="hidden" name="time" value={date?.toISOString()} />
                     </div>
-
                     <div>
                         <label className="text-sm font-medium mb-1 block">Takım Seçimi</label>
                         <div className="grid grid-cols-2 gap-2">
@@ -51,13 +55,13 @@ export function ProjectCreatePage({ teams }: { teams: Teams[] }) {
                             ))}
                         </div>
                     </div>
-
                     <input
                         name="status"
                         placeholder="Proje durumu"
                         className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        value={projectStatu}
+                        onChange={(e) => setProjectStatu(e.target.value)}
                     />
-
                     <button
                         type="submit"
                         className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"

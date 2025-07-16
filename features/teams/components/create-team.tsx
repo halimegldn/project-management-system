@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -13,6 +13,8 @@ import { TeamCreateAction } from "../actions";
 
 export function CreateTeam() {
     const [state, formAction] = useActionState(TeamCreateAction, null);
+    const [teamName, setTeamName] = useState("");
+    const [teamSurname, setTeamSurname] = useState("");
 
     return (
         <Dialog>
@@ -33,11 +35,15 @@ export function CreateTeam() {
                         name="name"
                         placeholder="Personel adı"
                         className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        value={teamName}
+                        onChange={(e) => setTeamName(e.target.value)}
                     />
                     <input
                         name="surname"
                         placeholder="Personel soyadı"
                         className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        value={teamSurname}
+                        onChange={(e) => setTeamSurname(e.target.value)}
                     />
                     <button
                         type="submit"

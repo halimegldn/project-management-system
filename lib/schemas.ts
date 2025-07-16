@@ -11,3 +11,8 @@ export const ProjectsSchema = z.object({
     time: z.date(),
     status: z.string().min(1, "Proje durumu girin")
 });
+
+export const TasksSchema = z.object({
+    name: z.string().min(1, "Task girin"),
+    projectsId: z.string().min(1, "Proje ID'si zorunludur"),
+})
