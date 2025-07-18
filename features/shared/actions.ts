@@ -14,25 +14,27 @@ export async function UserUpdate(prevState: any, formData: FormData) {
     if (!validationFields.success) {
         return {
             error: validationFields.error.flatten().fieldErrors,
-            message: "User rol alnırken hata oldu."
+            message: "User rol alınırken hata oldu."
         }
     }
 
     const { role } = validationFields.data;
 
     try {
-        const updateRole = await prisma.user.update({
-            where: {
-                id: id,
-            },
-            data: {
-                role,
-            }
-        })
-    } catch (error) {
+        await prisma.user.update({
+            where: { id },
+            data: { role },
+        });
+
         return {
             success: true,
-            message: "Rol başarıyla güncellendis",
+            message: "Rol başarıyla güncellendi",
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: "Rol güncellenirken hata oluştu",
         };
     }
+
 }
