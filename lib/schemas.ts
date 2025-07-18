@@ -16,3 +16,7 @@ export const TasksSchema = z.object({
     name: z.string().min(1, "Task girin"),
     projectsId: z.string().min(1, "Proje ID'si zorunludur"),
 })
+
+export const UserSchema = z.object({
+    role: z.string().min(1, "En az 1 rol adı girin")
+})
