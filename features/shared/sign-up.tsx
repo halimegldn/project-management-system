@@ -77,7 +77,7 @@ export default function SignUpPage() {
                 </form>
 
                 <p className="text-sm text-center text-neutral-400">
-                    Zaten hesabınız var mı? <a href="/sign-in" className="text-blue-500 hover:underline">Giriş yap</a>
+                    Zaten hesabınız var mı? <a href="/signIn" className="text-blue-500 hover:underline">Giriş yap</a>
                 </p>
             </div>
         </main>

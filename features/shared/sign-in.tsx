@@ -22,7 +22,7 @@ export default function SignInPage() {
         if (res.error) {
             setError(res.error.message || "Something went wrong.");
         } else {
-            router.push("/");
+            router.push("/dashboard");
         }
     }
 
@@ -65,7 +65,7 @@ export default function SignInPage() {
                 </form>
 
                 <p className="text-sm text-center text-neutral-400">
-                    Hesabınız yok mu? <a href="/sign-up" className="text-blue-500 hover:underline">Kayıt Ol</a>
+                    Hesabınız yok mu? <a href="/signUp" className="text-blue-500 hover:underline">Kayıt Ol</a>
                 </p>
             </div>
         </main>

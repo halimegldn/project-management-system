@@ -9,7 +9,10 @@ export async function getProjects() {
         const project = await prisma.projects.findMany({
             orderBy: {
                 createdAt: "desc",
-            }
+            },
+            include: {
+                teams: true,
+            },
         })
         return project;
     } catch (error) {
