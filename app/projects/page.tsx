@@ -2,7 +2,7 @@ import { ProjectHome } from "@/features/projects/components/project-home";
 import { getProjects, getProjectsById } from "@/features/projects/data";
 import { getTeams } from "@/features/teams/data";
 
-export default async function Projects({ id }: { id: string }) {
+export default async function Projects() {
     const projects = await getProjects();
     const teams = await getTeams();
 
