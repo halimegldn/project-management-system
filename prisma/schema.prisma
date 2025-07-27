@@ -39,6 +39,7 @@ model Teams {
 model User {
   id            String    @id @default(cuid())
   name          String
+  surname       String    @default("surname")
   email         String
   emailVerified Boolean
   image         String?
