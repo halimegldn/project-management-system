@@ -21,6 +21,33 @@ export async function getProjects() {
     }
 }
 
+export async function getUserProjects(userId: string) {
+    noStore()
+    try {
+        const projects = await prisma.projects.findMany({
+            where: {
+                teams: {
+                    some: {
+                        userId: userId,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+            include: {
+                teams: true,
+                tasks: true,
+            },
+        })
+        return projects
+    } catch (error) {
+        console.error("Error fetching user projects", error)
+        throw new Error("Kullanıcı projeleri alınırken hata oluştu")
+    }
+}
+
+
 export async function getProjectsById(id: string) {
     noStore();
 

@@ -16,3 +16,21 @@ export async function getUser() {
         throw new Error("User verileri alınırken hata oldu.");
     }
 }
+
+export async function getUserById(id: string) {
+    noStore()
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id },
+            include: {
+                Teams: true,
+                sessions: true,
+                accounts: true,
+            },
+        })
+        return user
+    } catch (error) {
+        console.error("Error fetching user by id", error)
+        throw new Error("User verisi alınırken hata oldu.")
+    }
+}

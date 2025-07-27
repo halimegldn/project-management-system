@@ -1,39 +1,55 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
-import { useSession, signOut } from "@/lib/auth-client";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation"
+import { useSession, signOut } from "@/lib/auth-client"
+import { useEffect } from "react"
 
 export default function DashboardPage() {
-    const router = useRouter();
-    const { data: session, isPending } = useSession();
+    const router = useRouter()
+    const { data: session, isPending, error } = useSession()
 
     useEffect(() => {
         if (!isPending && !session?.user) {
-            router.push("/signIn");
+            router.push("/signIn")
         }
-    }, [isPending, session, router]);
+    }, [isPending, session, router])
 
-    if (isPending)
-        return <p className="text-center mt-8 text-white">Loading...</p>;
-    if (!session?.user)
-        return <p className="text-center mt-8 text-white">Redirecting...</p>;
+    useEffect(() => {
+        if (session) {
+            console.log("Session data:", session)
+            console.log("User data:", session.user)
+        }
+    }, [session])
 
-    //add-start: destructure user from session
-    const { user } = session;
+    if (isPending) return <p>Loading...</p>
+    if (error) return <p>Error: {error.message}</p>
+    if (!session?.user) return <p>Redirecting...</p>
+
+    const { user } = session
 
     return (
-        <main className="max-w-md h-screen flex items-center justify-center flex-col mx-auto p-6 space-y-4 text-white">
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p>Welcome, {user.name || "User"}!</p>
-            <p>Email: {user.email}</p>
-            {/* add-start: sign out button */}
-            <button
-                onClick={() => signOut()}
-                className="w-full bg-white text-black font-medium rounded-md px-4 py-2 hover:bg-gray-200"
-            >
-                Sign Out
+        <main className="p-6">
+            <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+            <div className="space-y-2">
+                <p>
+                    <strong>ID:</strong> {user.id}
+                </p>
+                <p>
+                    <strong>Ad:</strong> {user.name}
+                </p>
+                <p>
+                    <strong>Email:</strong> {user.email}
+                </p>
+                <p>
+                    <strong>Rol:</strong> {user.role || "Rol bulunamadı"}
+                </p>
+                <p>
+                    <strong>Oluşturulma:</strong> {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Bilinmiyor"}
+                </p>
+            </div>
+            <button onClick={() => signOut()} className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                Çıkış Yap
             </button>
         </main>
-    );
+    )
 }
