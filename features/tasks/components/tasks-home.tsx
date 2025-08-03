@@ -10,15 +10,14 @@ export function TasksHome({ projects, tasks }: { projects: Projects[]; tasks: Ta
 
             <div className="w-full grid gap-4">
                 {tasks.map((task) => {
-                    const taskProject = projects.find((project) => project.id === task.projectsId);
-
+                    // const taskProject = projects.find((project) => project.id === task.projectsId);
                     return (
                         <div
                             key={task.id}
                             className="border rounded-xl p-4 shadow-sm hover:shadow-md transition bg-white"
                         >
                             <div className="text-sm text-gray-500 mb-1">
-                                {taskProject?.name ?? "Proje bulunamadı"}
+                                {task?.name ?? "Proje bulunamadı"}
                             </div>
 
                             <div className="flex items-center gap-2 text-blue-600">

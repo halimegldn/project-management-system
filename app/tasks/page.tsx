@@ -1,13 +1,12 @@
-import { getProjects } from "@/features/projects/data";
+import { getUserProjects } from "@/features/projects/data";
+import { getUserProjectTasks } from "@/features/tasks/data";
 import { TasksHome } from "@/features/tasks/components/tasks-home";
-import { getTasks } from "@/features/tasks/data";
 
-export default async function TasksPage() {
+export default async function TasksPage({ userId }: { userId: string }) {
+    const projects = await getUserProjects(userId);
+    const tasks = await getUserProjectTasks(userId);
 
-    const projects = await getProjects();
-    const tasks = await getTasks();
+    console.log("Tasks in TasksPage:", tasks); // Bu log kesin backend konsolunda görünmeli
 
-    return (
-        <TasksHome projects={projects} tasks={tasks} />
-    )
+    return <TasksHome projects={projects} tasks={tasks} />;
 }
