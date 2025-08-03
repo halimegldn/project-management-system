@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -11,18 +11,23 @@ import {
 import { PlusIcon } from "lucide-react";
 import { TeamCreateAction } from "../actions";
 import { Teams, User } from "@/lib/generated/prisma";
-import { SelectContent, SelectItem } from "@radix-ui/react-select";
-import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function CreateTeam({ users, teams }: { users: User[]; teams: Teams[] }) {
     const [state, formAction] = useActionState(TeamCreateAction, null);
-    const [selectedUserId, setSelectedUserId] = useState("");
-    const [teamName, setTeamName] = useState("");
-    const [teamSurname, setTeamSurname] = useState("");
-
+    const [selectedUserId, setSelectedUserId] = useState<string[]>([]);
+    const [open, setOpen] = useState(false);
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                     <PlusIcon className="w-4 h-4" />
@@ -36,40 +41,51 @@ export function CreateTeam({ users, teams }: { users: User[]; teams: Teams[] }) 
                 </DialogHeader>
 
                 <form action={formAction} className="flex flex-col gap-4 mt-4">
+                    <Input
+                        type="text"
+                        name="teamName"
+                        placeholder="Takım Adı"
+                        required
+                    />
 
-                    <Select>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Mevcut personel seçin" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {users.map((user) => (
-                                <SelectItem key={user.id} value={user.id}>
-                                    {user.name} {user.surname}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <input
-                        name="name"
-                        placeholder="Personel adı"
-                        className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        value={teamName}
-                        onChange={(e) => setTeamName(e.target.value)}
-                    />
-                    <input
-                        name="surname"
-                        placeholder="Personel soyadı"
-                        className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        value={teamSurname}
-                        onChange={(e) => setTeamSurname(e.target.value)}
-                    />
+                    {users.map((user) => (
+                        <Label key={user.id}>
+                            <Input
+                                type="checkbox"
+                                name="userId"
+                                value={user.id}
+                                checked={selectedUserId.includes(user.id)}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setSelectedUserId([...selectedUserId, user.id]);
+                                    } else {
+                                        setSelectedUserId(selectedUserId.filter((id) => id !== user.id));
+                                    }
+                                }}
+                            />
+                            {user.name}
+                        </Label>
+                    ))}
+
+                    {selectedUserId.map((id) => (
+                        <Input key={id} type="hidden" name="userId" value={id} />
+                    ))}
+
                     <button
                         type="submit"
                         className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
                     >
                         Kaydet
                     </button>
+
+                    {state?.message && (
+                        <p className={`mt-2 ${state.success ? "text-green-600" : "text-red-600"}`}>
+                            {state.message}
+                        </p>
+                    )}
                 </form>
+
+
             </DialogContent>
         </Dialog>
     );

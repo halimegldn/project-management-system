@@ -28,10 +28,8 @@ model Tasks {
 
 model Teams {
   id        String     @id @default(cuid())
-  name      String
-  surname   String
-  userId    String?
-  user      User?      @relation(fields: [userId], references: [id])
+  teamName  String
+  users     User[]     @relation("UserTeams")
   projects  Projects[] @relation("ProjectTeams")
   createdAt DateTime   @default(now())
 }
@@ -39,8 +37,7 @@ model Teams {
 model User {
   id            String    @id @default(cuid())
   name          String
-  surname       String    @default("surname")
-  email         String
+  email         String    @unique
   emailVerified Boolean
   image         String?
   role          String    @default("user")
@@ -48,10 +45,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
-  Teams         Teams[]
-
-  @@unique([email])
-  @@map("user")
+  teams         Teams[]   @relation("UserTeams")
 }
 
 model Session {

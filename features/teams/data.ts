@@ -9,6 +9,9 @@ export async function getTeams() {
         const teams = await prisma.teams.findMany({
             orderBy: {
                 createdAt: "desc"
+            },
+            include: {
+                users: true,
             }
         })
         return teams
