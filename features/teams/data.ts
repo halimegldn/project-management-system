@@ -35,10 +35,10 @@ export async function getUserTeams(userId: string) {
                 createdAt: "desc",
             },
             include: {
-                users: true,  // teams modeli içinde tasks var mı, kontrol et
+                users: true,
             },
         })
-        return teams  // burada da hata var, 'teams' dönmeli
+        return teams
     } catch (error) {
         console.error("Error fetching user projects", error)
         throw new Error("Kullanıcı projeleri alınırken hata oluştu")
