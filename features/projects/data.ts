@@ -32,9 +32,13 @@ export async function getUserProjects(userId: string) {
             where: {
                 teams: {
                     some: {
-                        userId: userId,
-                    },
-                },
+                        users: {
+                            some: {
+                                id: userId,
+                            }
+                        }
+                    }
+                }
             },
             orderBy: {
                 createdAt: "desc",

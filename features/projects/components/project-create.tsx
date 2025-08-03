@@ -50,7 +50,7 @@ export function ProjectCreatePage({ teams }: { teams: Teams[] }) {
                             {teams.map((team) => (
                                 <label key={team.id} className="flex items-center gap-2">
                                     <input type="checkbox" name="teams" value={team.id} />
-                                    <span className="text-sm">{team.name} {team.surname}</span>
+                                    <span className="text-sm">{team.teamName}</span>
                                 </label>
                             ))}
                         </div>

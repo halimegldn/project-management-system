@@ -4,7 +4,7 @@ import { Teams, User } from "@/lib/generated/prisma";
 import { CreateTeam } from "./create-team";
 import { UserIcon } from "lucide-react";
 
-export function TeamsHome({ teams, users }: { teams: Teams[], users: User[]; }) {
+export function TeamsHome({ teams, users, userRole, userId }: { teams: Teams[], users: User[]; userRole: string; userId: string; }) {
     return (
         <div className="p-6 flex flex-col gap-6">
             <div className="flex justify-between items-center">

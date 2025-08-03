@@ -1,23 +1,21 @@
 import { ProjectHome } from "@/features/projects/components/project-home"
 import { getProjects, getUserProjects } from "@/features/projects/data"
+import { getCurrentUser } from "@/features/shared/data"
 import { getTeams } from "@/features/teams/data"
 import { getServerSession } from "@/lib/session"
 import { redirect } from "next/navigation"
 
 export default async function Projects() {
-    const session = await getServerSession()
+    const user = await getCurrentUser()
 
-    if (!session?.user) {
+    if (!user) {
         redirect("/signIn")
     }
 
-    const userId = session.user.id
-    const userRole = session.user.role ?? "user"
-
     // Role'e göre farklı fonksiyonları çağır
-    const projects = userRole === "admin" ? await getProjects() : await getUserProjects(userId)
+    const projects = user.role === "admin" ? await getProjects() : await getUserProjects(user.id)
 
     const teams = await getTeams()
 
-    return <ProjectHome projects={projects} teams={teams} userRole={userRole} userId={userId} />
+    return <ProjectHome projects={projects} teams={teams} userRole={user.role} userId={user.id} />
 }

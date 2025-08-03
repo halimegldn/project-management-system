@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "@/lib/session";
 import { unstable_noStore as noStore } from "next/cache";
 
 export async function getUser() {
@@ -23,7 +24,7 @@ export async function getUserById(id: string) {
         const user = await prisma.user.findUnique({
             where: { id },
             include: {
-                Teams: true,
+                teams: true,
                 sessions: true,
                 accounts: true,
             },
@@ -32,5 +33,31 @@ export async function getUserById(id: string) {
     } catch (error) {
         console.error("Error fetching user by id", error)
         throw new Error("User verisi alınırken hata oldu.")
+    }
+}
+
+export async function getCurrentUser() {
+    noStore();
+
+    const session = await getServerSession();
+
+    if (!session?.user?.id) {
+        return null;
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: session.user.id },
+            include: {
+                teams: true,
+                sessions: true,
+                accounts: true,
+            },
+        });
+
+        return user;
+    } catch (error) {
+        console.error("getCurrentUser error:", error);
+        return null;
     }
 }
