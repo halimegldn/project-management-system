@@ -37,12 +37,7 @@ export function ProjectHome({
 
     useEffect(() => {
         if (state?.success) {
-            console.log(state.message)
-            setEditingProjectId(null) // Başarılı olursa düzenleme modundan çık
-            // İsteğe bağlı: Bir toast bildirimi göster
-        } else if (state?.error) {
-            console.error(state.message, state.error)
-            // İsteğe bağlı: Hata mesajlarını inputların yanında göster veya bir hata toast'ı göster
+            setEditingProjectId(null)
         }
     }, [state])
 
