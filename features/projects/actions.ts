@@ -1,10 +1,10 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 import { ProjectsSchema } from "@/lib/schemas";
 
 export async function ProjectCreate(prevState: any, formData: FormData) {
-
 
     const validationFields = ProjectsSchema.safeParse({
         name: formData.get("name")?.toString() || "",
@@ -28,7 +28,7 @@ export async function ProjectCreate(prevState: any, formData: FormData) {
             time,
             status,
             teams: {
-                connect: teams.map(id => ({ id })) //takımların içerisinde maple dön
+                connect: teams.map(id => ({ id }))
             }
         },
         include: { teams: true },
@@ -36,3 +36,48 @@ export async function ProjectCreate(prevState: any, formData: FormData) {
 
     return createdProject;
 }
+
+export async function ProjectUpdate(prevState: any, formData: FormData) {
+    const projectId = formData.get("projectId")?.toString();
+
+    const teamsRaw = formData.getAll("teams");
+    const teams = Array.isArray(teamsRaw) && teamsRaw.length > 0 ? teamsRaw.map(t => t.toString()) : [];
+
+    const validationFields = ProjectsSchema.safeParse({
+        name: formData.get("name")?.toString() || "",
+        time: formData.get("time") ? new Date(formData.get("time")!.toString()) : undefined,
+        status: formData.get("status")?.toString() || "",
+        teams,
+    });
+
+    if (!validationFields.success) {
+        console.error("Validation errors:", validationFields.error);
+        return {
+            error: validationFields.error.flatten().fieldErrors,
+            message: "Lütfen tüm alanları doğru doldurun."
+        };
+    }
+
+
+    const { name, time, status } = validationFields.data;
+
+    try {
+        const updatedProject = await prisma.projects.update({
+            where: { id: projectId },
+            data: {
+                name,
+                time,
+                status,
+                ...(teams.length > 0 ? { teams: { connect: teams.map(id => ({ id })) } } : {})
+            },
+            include: { teams: true }
+        });
+
+        revalidatePath("/projects")
+        return { success: true, message: "Proje başarıyla güncellendi.", project: updatedProject }
+    } catch (error) {
+        console.error("Database error:", error);
+        throw new Error("Database error");
+    }
+}
+

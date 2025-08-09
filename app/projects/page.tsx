@@ -1,6 +1,6 @@
 import { ProjectHome } from "@/features/projects/components/project-home"
 import { getProjects, getUserProjects } from "@/features/projects/data"
-import { getCurrentUser } from "@/features/shared/data"
+import { getCurrentUser, getUser } from "@/features/shared/data"
 import { getTeams } from "@/features/teams/data"
 import { getServerSession } from "@/lib/session"
 import { redirect } from "next/navigation"
