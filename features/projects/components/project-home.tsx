@@ -7,17 +7,7 @@ import { CalendarDays, Info, Workflow, Users } from "lucide-react"
 //     tasks: Tasks[]
 // }
 
-export function ProjectHome({
-    projects,
-    teams,
-    userRole,
-    userId,
-}: {
-    projects: Projects[];
-    teams: Teams[]
-    userRole: string
-    userId: string
-}) {
+export function ProjectHome({ projects, teams, userRole, userId }: { projects: Projects[]; teams: Teams[]; userRole: string; userId: string }) {
     return (
         <div className="p-6 flex flex-col gap-6">
             <div className="flex justify-between items-center">

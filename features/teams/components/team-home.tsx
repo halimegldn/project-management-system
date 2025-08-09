@@ -17,7 +17,7 @@ export function TeamsHome({ teams, users, userRole, userId }: { teams: (Teams & 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {teams.map((team) => (
 
-                    <Dialog>
+                    <Dialog key={team.id}>
                         <DialogTrigger className="text-sm text-blue-500 underline">
                             <div
                                 key={team.id}
