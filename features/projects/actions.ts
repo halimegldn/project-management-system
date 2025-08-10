@@ -68,7 +68,7 @@ export async function ProjectUpdate(prevState: any, formData: FormData) {
                 name,
                 time,
                 status,
-                ...(teams.length > 0 ? { teams: { connect: teams.map(id => ({ id })) } } : {})
+                ...(teams.length > 0 ? { teams: { set: teams.map(id => ({ id })) } } : {})
             },
             include: { teams: true }
         });

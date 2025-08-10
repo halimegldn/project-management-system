@@ -10,12 +10,7 @@ import { ProjectUpdate } from "@/features/projects/actions" // Doğru import yol
 import { Button } from "@/components/ui/button"
 import { Select } from "@/components/ui/select"
 
-export function ProjectHome({
-    projects,
-    teams,
-    userRole,
-    userId,
-}: { projects: Projects[]; teams: Teams[]; userRole: string; userId: string }) {
+export function ProjectHome({ projects, teams, userRole, userId, }: { projects: (Projects & { teams: Teams[] })[], teams: Teams[], userRole: string, userId: string }) {
     const [state, formAction] = useActionState(ProjectUpdate, null)
     const [editingProjectId, setEditingProjectId] = useState<string | null>(null)
     const [currentProjectName, setCurrentProjectName] = useState<string>("")
@@ -28,18 +23,15 @@ export function ProjectHome({
             if (projectToEdit) {
                 setCurrentProjectName(projectToEdit.name)
                 setCurrentProjectStatus(projectToEdit.status)
+                setSelectedTeamIds(projectToEdit.teams.map(t => t.id)); // Projedeki takımları gösterme alanı
             }
         } else {
             setCurrentProjectName("")
             setCurrentProjectStatus("")
+            setSelectedTeamIds([]);
         }
     }, [editingProjectId, projects])
 
-    useEffect(() => {
-        if (state?.success) {
-            setEditingProjectId(null)
-        }
-    }, [state])
 
     return (
         <div className="p-6 flex flex-col gap-6">
@@ -100,7 +92,7 @@ export function ProjectHome({
                                                 type="checkbox"
                                                 name="teams"
                                                 value={team.id}
-                                                checked={selectedTeamIds.includes(team.id)}
+                                                checked={selectedTeamIds.includes(team.id)} // Takımlar set ediliyor
                                                 onChange={(e) => {
                                                     if (e.target.checked) {
                                                         setSelectedTeamIds((prev) => [...prev, team.id]);
@@ -113,6 +105,7 @@ export function ProjectHome({
                                             {team.teamName}
                                         </Label>
                                     ))}
+
                                 </div>
 
 
