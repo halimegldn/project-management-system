@@ -49,3 +49,55 @@ export async function TeamCreateAction(prevState: any, formData: FormData) {
         };
     }
 }
+
+export async function teamUpdateAction(prevState: any, formData: FormData) {
+    const teamId = formData.get("teamId")?.toString();
+    const userIds = formData.getAll("userId").filter(id => typeof id === "string") as string[];
+
+    if (!teamId) {
+        return {
+            success: false,
+            message: " Takım bulunamadı."
+        }
+    }
+
+    const validationFields = TeamsSchema.safeParse({
+        teamName: formData.get("teamName"),
+    })
+
+    if (!validationFields.success) {
+        console.error("Validation errors:", validationFields.error);
+        return {
+            error: validationFields.error.flatten().fieldErrors,
+            message: "Lütfen takımları doğru doldurun."
+        };
+    }
+
+    const { teamName } = validationFields.data;
+
+    try {
+        const updatedTeam = await prisma.teams.update({
+            where: {
+                id: teamId,
+            },
+            data: {
+                teamName,
+                ...(userIds.length > 0
+                    ? { users: { set: userIds.map(id => ({ id })) } }
+                    : {})
+            }
+
+        })
+        return {
+            success: true,
+            message: "Takım güncellendi.",
+            data: updatedTeam,
+        }
+    } catch (error) {
+        console.error("Takım oluşturulurken hata:", error);
+        return {
+            success: false,
+            message: "Takım oluşturulurken bir hata oluştu.",
+        };
+    }
+}
