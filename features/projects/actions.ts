@@ -40,14 +40,13 @@ export async function ProjectCreate(prevState: any, formData: FormData) {
 export async function ProjectUpdate(prevState: any, formData: FormData) {
     const projectId = formData.get("projectId")?.toString();
 
-    const teamsRaw = formData.getAll("teams");
-    const teams = Array.isArray(teamsRaw) && teamsRaw.length > 0 ? teamsRaw.map(t => t.toString()) : [];
+    const teams = formData.getAll("teams").map(team => team.toString());
 
     const validationFields = ProjectsSchema.safeParse({
         name: formData.get("name")?.toString() || "",
         time: formData.get("time") ? new Date(formData.get("time")!.toString()) : undefined,
         status: formData.get("status")?.toString() || "",
-        teams,
+        teams: teams,
     });
 
     if (!validationFields.success) {
