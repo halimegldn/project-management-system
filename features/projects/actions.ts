@@ -80,7 +80,7 @@ export async function ProjectUpdate(prevState: any, formData: FormData) {
     }
 }
 
-export async function ProjectDelete(projectId: string) {
+export async function ProjectDelete(projectId: string, formData: FormData) {
     if (!projectId) {
         return {
             success: false,

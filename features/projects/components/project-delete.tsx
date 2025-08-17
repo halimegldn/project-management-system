@@ -15,18 +15,22 @@ export function ProjectDeleteAlert({ projectId }: { projectId: string }) {
         setLoading(true);
 
         startTransition(async () => {
+            setLoading(true);
+
             try {
-                const result = await ProjectDelete(projectId);
+                const formData = new FormData();
+                formData.append("projectId", projectId);
+
+                const result = await ProjectDelete(projectId, formData);
+
                 if (result.success) {
                     setOpen(false);
                     router.refresh();
                 } else {
-                    console.error("Delete failed:", result.message);
+                    console.error(result.message);
                 }
             } catch (err) {
-                console.error("Proje silme hatası:", err);
-            } finally {
-                setLoading(false);
+                console.error(err);
             }
         });
     };
