@@ -14,16 +14,16 @@ model Projects {
   teams     Teams[]  @relation("ProjectTeams")
   time      DateTime
   status    String
-  tasks     Tasks[]
+  tasks     Tasks[]  @relation("ProjectTasks")
   createdAt DateTime @default(now())
 }
 
 model Tasks {
-  id         String   @id @default(cuid())
-  name       String
-  projectsId String
-  projects   Projects @relation(fields: [projectsId], references: [id])
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String
+  projectId String
+  project   Projects @relation("ProjectTasks", fields: [projectId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 model Teams {

@@ -80,3 +80,31 @@ export async function ProjectUpdate(prevState: any, formData: FormData) {
     }
 }
 
+export async function ProjectDelete(projectId: string) {
+    if (!projectId) {
+        return {
+            success: false,
+            message: "Proje id'si bulunamadı.",
+        };
+    }
+
+    try {
+        await prisma.projects.delete({
+            where: { id: projectId },
+        });
+
+        revalidatePath("/projects");
+
+        return {
+            success: true,
+            message: "Proje silindi.",
+        };
+    } catch (error) {
+        console.log("Proje silinemedi.", error);
+        return {
+            success: false,
+            message: "Proje silinirken hata oluştu.",
+        };
+    }
+}
+

@@ -9,6 +9,7 @@ import { useActionState, useState, useEffect } from "react" // useEffect'i impor
 import { ProjectUpdate } from "@/features/projects/actions" // Doğru import yolu
 import { Button } from "@/components/ui/button"
 import { Select } from "@/components/ui/select"
+import { ProjectDeleteAlert } from "./project-delete"
 
 export function ProjectHome({ projects, teams, userRole, userId, }: { projects: (Projects & { teams: Teams[] })[], teams: Teams[], userRole: string, userId: string }) {
     const [state, formAction] = useActionState(ProjectUpdate, null)
@@ -163,6 +164,8 @@ export function ProjectHome({ projects, teams, userRole, userId, }: { projects: 
                                         <Button onClick={() => setEditingProjectId(project.id)} size="sm">
                                             Düzenle
                                         </Button>
+                                        <ProjectDeleteAlert projectId={project.id} />
+
                                     </div>
                                 )}
                             </div>
