@@ -16,5 +16,6 @@ export default async function TasksPage() {
     // projelere göre taskları al
     const tasks = user.role === "admin" ? await getTasks() : await getUserProjectTasks(user.id)
 
+
     return <TasksHome projects={projects} tasks={tasks} userRole={user.role} />
 }

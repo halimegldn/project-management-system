@@ -10,7 +10,7 @@ export async function getTasks() {
                 createdAt: "desc"
             },
             include: {
-                projects: true,
+                project: true,
             }
         })
         return tasks;
@@ -26,7 +26,7 @@ export async function getTaskById(id: string) {
         const task = await prisma.tasks.findUnique({
             where: { id },
             include: {
-                projects: true,
+                project: true,
             },
         })
         return task
@@ -41,13 +41,13 @@ export async function getProjectTasks(projectId: string) {
     try {
         const tasks = await prisma.tasks.findMany({
             where: {
-                projectsId: projectId,
+                projectId: projectId,
             },
             orderBy: {
                 createdAt: "desc",
             },
             include: {
-                projects: true,
+                project: true,
             },
         })
         return tasks
@@ -83,10 +83,10 @@ export async function getUserProjectTasks(userId: string) {
 
         const tasks = await prisma.tasks.findMany({
             where: {
-                projectsId: { in: projectIds },
+                projectId: { in: projectIds },
             },
             orderBy: { createdAt: "desc" },
-            include: { projects: true },
+            include: { project: true },
         });
 
         console.log("Tasks for user's projects:", tasks);

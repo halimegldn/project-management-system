@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Workflow } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TasksCreate } from "./tasks-create";
@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import { TaskUpdateAction } from "../actions";
 import { Button } from "@/components/ui/button";
 import { useActionState, useEffect, useState } from "react";
-import type { Projects, Tasks } from "@/lib/generated/prisma"
+import type { Projects, Tasks } from "@/lib/generated/prisma";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { TaskDeleteAlert } from "./task-delete";
 
-export function TasksHome({ projects, tasks, userRole, }: { projects: Projects[]; tasks: (Tasks & { projects: Projects })[]; userRole: string }) {
-
+export function TasksHome({ projects, tasks, userRole, }: { projects: Projects[]; tasks: (Tasks & { project: Projects })[]; userRole: string; }) {
     const router = useRouter();
 
     const [state, formAction] = useActionState(TaskUpdateAction, null);
@@ -20,10 +20,10 @@ export function TasksHome({ projects, tasks, userRole, }: { projects: Projects[]
 
     useEffect(() => {
         if (state?.success) {
-            setEditingTaskId(null)
+            setEditingTaskId(null);
             router.refresh();
         }
-    }, [state, router])
+    }, [state, router]);
 
     return (
         <div className="flex flex-col gap-6 p-6">
@@ -43,18 +43,18 @@ export function TasksHome({ projects, tasks, userRole, }: { projects: Projects[]
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {tasks.map((task) => {
                         const isEditing = editingTaskId === task.id;
+
                         return (
                             <Card key={task.id} className="shadow-lg hover:shadow-xl transition rounded-2xl">
                                 {isEditing ? (
                                     <form action={formAction} className="flex flex-col gap-4 p-4">
-
                                         <Input type="hidden" name="id" value={task.id} />
                                         <Input type="hidden" name="projectId" value={task.projectId} />
 
                                         <div className="flex flex-col gap-1">
                                             <Label>Proje</Label>
                                             <Input
-                                                value={task.projects?.name ?? "Proje bulunamadı"}
+                                                value={task.project?.name ?? "Proje bulunamadı"}
                                                 readOnly
                                                 className="bg-gray-100 cursor-not-allowed"
                                             />
@@ -86,7 +86,9 @@ export function TasksHome({ projects, tasks, userRole, }: { projects: Projects[]
                                     </form>
                                 ) : (
                                     <CardContent className="p-4">
-                                        <div className="text-sm text-gray-500 mb-2">{task.projects?.name ?? "Proje bulunamadı"}</div>
+                                        <div className="text-sm text-gray-500 mb-2">
+                                            {task.project?.name ?? "Proje bulunamadı"}
+                                        </div>
                                         <div className="text-lg font-medium text-blue-700">{task.name}</div>
                                         {userRole === "admin" && (
                                             <div className="mt-2 pt-2 border-t">
@@ -99,17 +101,18 @@ export function TasksHome({ projects, tasks, userRole, }: { projects: Projects[]
                                 )}
 
                                 {!isEditing && userRole === "admin" && (
-                                    <CardFooter className="flex justify-end border-t p-4">
+                                    <CardFooter className="flex justify-end gap-2 border-t p-4">
                                         <Button onClick={() => setEditingTaskId(task.id)} size="sm">
                                             Düzenle
                                         </Button>
+                                        <TaskDeleteAlert taskId={task.id} />
                                     </CardFooter>
                                 )}
                             </Card>
-                        )
+                        );
                     })}
                 </div>
             )}
         </div>
-    )
+    );
 }

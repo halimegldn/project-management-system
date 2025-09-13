@@ -5,6 +5,7 @@ import { PlusIcon } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { TaskCreateAction } from "../actions";
 import { Projects } from "@/lib/generated/prisma";
+import { useRouter } from "next/navigation";
 import {
     Select,
     SelectContent,
@@ -14,7 +15,9 @@ import {
 } from "@/components/ui/select";
 
 export function TasksCreate({ projects }: { projects: Projects[] }) {
+    const router = useRouter();
     const [state, formAction] = useActionState(TaskCreateAction, null);
+    const [open, setOpen] = useState(false);
     const [selectedProjectId, setSelectedProjectId] = useState("");
     const [taskName, setTaskName] = useState("");
 
@@ -22,11 +25,15 @@ export function TasksCreate({ projects }: { projects: Projects[] }) {
         if (state?.success) {
             setSelectedProjectId("");
             setTaskName("");
+            setOpen(false);
+            router.refresh();
         }
-    }, [state]);
+    }, [state, router]);
+
+    const canSubmit = selectedProjectId && taskName;
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-36">
                     <PlusIcon className="w-4 h-4" />
@@ -54,7 +61,8 @@ export function TasksCreate({ projects }: { projects: Projects[] }) {
                         </SelectContent>
                     </Select>
 
-                    <input type="hidden" name="projectsId" value={selectedProjectId} />
+                    {/* ÖNEMLİ: name 'projectId' olmalı */}
+                    <input type="hidden" name="projectId" value={selectedProjectId} />
 
                     <label className="font-medium text-sm">Task Adı</label>
                     <input
@@ -67,18 +75,19 @@ export function TasksCreate({ projects }: { projects: Projects[] }) {
 
                     <button
                         type="submit"
-                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition disabled:opacity-50"
+                        disabled={!canSubmit}
                     >
                         Kaydet
                     </button>
 
-                    {/* {state?.success === false && (
+                    {/* İstersen geri bildirim göster */}
+                    {state?.success === false && (
                         <p className="text-red-600 text-sm mt-2">{state.message || "Hata oluştu"}</p>
                     )}
-
                     {state?.success === true && (
                         <p className="text-green-600 text-sm mt-2">{state.message}</p>
-                    )} */}
+                    )}
                 </form>
             </DialogContent>
         </Dialog>
