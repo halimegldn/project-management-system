@@ -2,8 +2,9 @@
 
 import "./globals.css";
 import { usePathname } from "next/navigation";
-import { Navbar } from "@/features/shared/navbar";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Navbar } from "@/features/shared/components/navbar";
+import { ThemeProvider } from "@/features/shared/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {!hideNavbar && <Navbar />}
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {!hideNavbar && <Navbar />}
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { getUser } from "./data";
+import { ModeToggle } from "./mode-toggle";
 
 export function Navbar() {
     return (
-        <nav className="w-full bg-neutral-600 text-white shadow-lg py-4 px-6">
+        <nav className="w-full shadow-lg py-4 px-6">
             <div className="max-w-4xl mx-auto flex justify-center items-center gap-8">
                 <Link
                     href="/dashboard"
@@ -35,6 +35,7 @@ export function Navbar() {
                 >
                     Rapor
                 </Link>
+                <ModeToggle />
             </div>
         </nav>
     );
