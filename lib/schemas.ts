@@ -13,7 +13,7 @@ export const ProjectsSchema = z.object({
 
 export const TasksSchema = z.object({
     name: z.string().min(1, "Task girin"),
-    projectsId: z.string().min(1, "Proje ID'si zorunludur"),
+    projectId: z.string().min(1, "Proje ID'si zorunludur"),
 })
 
 export const UserSchema = z.object({

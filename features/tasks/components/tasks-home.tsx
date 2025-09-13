@@ -49,7 +49,7 @@ export function TasksHome({ projects, tasks, userRole, }: { projects: Projects[]
                                     <form action={formAction} className="flex flex-col gap-4 p-4">
 
                                         <Input type="hidden" name="id" value={task.id} />
-                                        <Input type="hidden" name="projectsId" value={task.projectsId} />
+                                        <Input type="hidden" name="projectId" value={task.projectId} />
 
                                         <div className="flex flex-col gap-1">
                                             <Label>Proje</Label>

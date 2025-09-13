@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export async function TaskCreateAction(prevState: any, formData: FormData) {
     const validationFields = TasksSchema.safeParse({
         name: formData.get("name"),
-        projectsId: formData.get("projectsId"),
+        projectId: formData.get("projectId"),
     })
 
     if (!validationFields.success) {
@@ -17,10 +17,10 @@ export async function TaskCreateAction(prevState: any, formData: FormData) {
             message: "Task girin"
         }
     }
-    const { name, projectsId } = validationFields.data;
+    const { name, projectId } = validationFields.data;
 
     const createTasks = await prisma.tasks.create({
-        data: { name, projectsId }
+        data: { name, projectId }
     });
 
     return {
@@ -34,7 +34,7 @@ export async function TaskUpdateAction(prevState: any, formData: FormData) {
 
     const validationFields = TasksSchema.safeParse({
         name: formData.get("name"),
-        projectsId: formData.get("projectsId"),
+        projectId: formData.get("projectId"),
     });
 
     if (!validationFields.success) {
@@ -45,12 +45,12 @@ export async function TaskUpdateAction(prevState: any, formData: FormData) {
         };
     }
 
-    const { name, projectsId } = validationFields.data;
+    const { name, projectId } = validationFields.data;
 
     try {
         await prisma.tasks.update({
             where: { id },
-            data: { name, projectsId },
+            data: { name, projectId },
         });
 
         return {
