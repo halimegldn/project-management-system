@@ -1,73 +1,183 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Calendar } from "@/components/ui/calendar";
-import { useActionState, useState } from "react";
-import { PlusIcon } from "lucide-react";
-import { ProjectCreate } from "../actions";
-import { Teams } from "@/lib/generated/prisma";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Plus, Users, CalendarDays, FileText, Workflow } from "lucide-react";
+import type { Teams } from "@/lib/generated/prisma";
+import { ProjectCreate } from "@/features/projects/actions";
+import { useActionState } from "react";
 
-export function ProjectCreatePage({ teams }: { teams: Teams[] }) {
+interface ProjectCreatePageProps {
+    teams: Teams[];
+}
 
-    const [state, formAction] = useActionState(ProjectCreate, null);
-    const [projectName, setProjectName] = useState("");
-    const [date, setDate] = useState<Date | undefined>(new Date());
-    const [projectStatu, setProjectStatu] = useState("");
+export function ProjectCreatePage({ teams }: ProjectCreatePageProps) {
+    const [open, setOpen] = useState(false);
+    const [selectedTeamIds, setSelectedTeamIds] = useState<string[]>([]);
+
+    // Server action state
+    type ActionState =
+        | { success: true; message?: string }
+        | { success: false; error?: unknown; message?: string }
+        | null;
+
+    const [state, formAction] = useActionState<ProjectCreatePageProps | any, FormData>(
+        ProjectCreate as any,
+        null
+    );
+
+    // Başarıyı izle ve modalı kapat
+    useEffect(() => {
+        if (state && (state as any).success) {
+            setSelectedTeamIds([]);
+            setOpen(false);
+        }
+    }, [state]);
 
     return (
-        <Dialog>
-            <DialogTrigger className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                <PlusIcon className="w-4 h-4" />
-                Proje Ekle
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <span className="cursor-pointer">Yeni Proje</span>
             </DialogTrigger>
-            <DialogContent className="max-w-md">
-                <DialogHeader>
-                    <DialogTitle>Yeni Proje Oluştur</DialogTitle>
-                </DialogHeader>
 
-                <form action={formAction} className="flex flex-col gap-4">
-                    <input
-                        name="name"
-                        placeholder="Proje adı"
-                        className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
-                    />
-
-                    <div>
-                        <label className="text-sm font-medium mb-1 block">Proje Tarihi</label>
-                        <Calendar
-                            mode="single"
-                            selected={date}
-                            onSelect={setDate}
-                            className="rounded-md border"
-                        />
-                        <input type="hidden" name="time" value={date?.toISOString()} />
-                    </div>
-                    <div>
-                        <label className="text-sm font-medium mb-1 block">Takım Seçimi</label>
-                        <div className="grid grid-cols-2 gap-2">
-                            {teams.map((team) => (
-                                <label key={team.id} className="flex items-center gap-2">
-                                    <input type="checkbox" name="teams" value={team.id} />
-                                    <span className="text-sm">{team.teamName}</span>
-                                </label>
-                            ))}
+            <DialogContent className="bg-popover border-border shadow-2xl max-w-md">
+                <DialogHeader className="space-y-3">
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                            <Workflow className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <DialogTitle className="text-xl font-semibold text-popover-foreground">
+                                Yeni Proje Oluştur
+                            </DialogTitle>
+                            <DialogDescription className="text-muted-foreground mt-1">
+                                Yeni bir proje oluşturun ve takımları atayın
+                            </DialogDescription>
                         </div>
                     </div>
-                    <input
-                        name="status"
-                        placeholder="Proje durumu"
-                        className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        value={projectStatu}
-                        onChange={(e) => setProjectStatu(e.target.value)}
-                    />
-                    <button
-                        type="submit"
-                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition"
-                    >
-                        Kaydet
-                    </button>
+                </DialogHeader>
+
+                {/* Artık handleFormSubmit yok; doğrudan formAction kullanıyoruz */}
+                <form action={formAction} className="space-y-6 mt-6">
+                    <div className="space-y-2">
+                        <Label
+                            htmlFor="project-name"
+                            className="text-sm font-medium text-popover-foreground flex items-center gap-2"
+                        >
+                            <FileText className="w-4 h-4" />
+                            Proje Adı
+                        </Label>
+                        <Input
+                            id="project-name"
+                            name="name"
+                            placeholder="Proje adını girin"
+                            className="bg-input border-border focus:border-primary focus:ring-ring"
+                            required
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="project-status" className="text-sm font-medium text-popover-foreground">
+                            Durum
+                        </Label>
+                        <Input
+                            id="project-status"
+                            name="status"
+                            placeholder="Örn: Başlangıç, Devam Ediyor, Tamamlandı"
+                            className="bg-input border-border focus:border-primary focus:ring-ring"
+                            required
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label className="text-sm font-medium text-popover-foreground flex items-center gap-2">
+                            <Users className="w-4 h-4" />
+                            Takımlar
+                        </Label>
+                        <div className="max-h-32 overflow-y-auto border border-border rounded-md p-3 bg-input space-y-2">
+                            {teams.length === 0 ? (
+                                <p className="text-sm text-muted-foreground text-center py-2">
+                                    Henüz takım bulunmuyor
+                                </p>
+                            ) : (
+                                teams.map((team) => (
+                                    <Label
+                                        key={team.id}
+                                        className="flex items-center gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded-sm transition-colors"
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            name="teams"                // <-- ÖNEMLİ: formData.getAll('teams')
+                                            value={team.id}
+                                            checked={selectedTeamIds.includes(team.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedTeamIds((prev) => [...prev, team.id]);
+                                                } else {
+                                                    setSelectedTeamIds((prev) => prev.filter((id) => id !== team.id));
+                                                }
+                                            }}
+                                            className="rounded border-border text-primary focus:ring-ring"
+                                        />
+                                        <span className="text-sm text-popover-foreground">{team.teamName}</span>
+                                    </Label>
+                                ))
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label
+                            htmlFor="project-date"
+                            className="text-sm font-medium text-popover-foreground flex items-center gap-2"
+                        >
+                            <CalendarDays className="w-4 h-4" />
+                            Tarih
+                        </Label>
+                        <Input
+                            id="project-date"
+                            type="date"
+                            name="time"
+                            className="bg-input border-border focus:border-primary focus:ring-ring"
+                            required
+                        />
+                    </div>
+
+                    {(state as any)?.success === false && (
+                        <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-md">
+                            <p className="text-sm text-destructive">{(state as any)?.message ?? "Hata oluştu"}</p>
+                        </div>
+                    )}
+
+                    <div className="flex gap-3 pt-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setOpen(false)}
+                            className="flex-1 border-border hover:bg-muted/50 transition-colors"
+                        >
+                            İptal
+                        </Button>
+                        <Button
+                            type="submit"
+                            className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg transition-all duration-200"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Plus className="w-4 h-4" />
+                                Oluştur
+                            </div>
+                        </Button>
+                    </div>
                 </form>
             </DialogContent>
         </Dialog>
