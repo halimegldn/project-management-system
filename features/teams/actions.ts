@@ -101,3 +101,26 @@ export async function teamUpdateAction(prevState: any, formData: FormData) {
         };
     }
 }
+
+export async function TeamDeleteAction(prevState: any, formData: FormData) {
+    const id = formData.get("id") as string;
+
+    if (!id) {
+        return { success: false, message: "Geçersiz task id." };
+    }
+
+    try {
+        await prisma.teams.delete({
+            where: { id },
+        });
+        return {
+            success: true,
+            messagge: "Task başarıyla silindi."
+        }
+    } catch (error) {
+        return {
+            success: false,
+            messagge: "Task silinirken hata oluştu."
+        };
+    }
+}

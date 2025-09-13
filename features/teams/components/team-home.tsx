@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Teams, User } from "@/lib/generated/prisma";
 import { useActionState, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { TeamDeleteAlert } from "./team-delete";
 
 export function TeamsHome({ teams, users, userRole, userId }: { teams: (Teams & { users: User[] })[]; users: User[]; userRole: string; userId: string; }) {
     const router = useRouter();
@@ -125,6 +126,7 @@ export function TeamsHome({ teams, users, userRole, userId }: { teams: (Teams & 
                                 </DialogHeader>
                                 <DialogFooter>
                                     <Button onClick={() => startEditing(team)}>Düzenle</Button>
+                                    <TeamDeleteAlert teamId={team.id} />
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
